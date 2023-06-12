@@ -7,7 +7,7 @@ app = "icy-brook-7624"
 primary_region = "iad"
 
 [env]
-  PORT = "8080"
+  PORT = "3000"
 
 [http_service]
   internal_port = 3000
