@@ -34,15 +34,20 @@ app.delete('/api/notes/:id', (request, response) => {
 })
 
 app.post('/api/notes', (request, response) => {
-    const maxId = notes.length > 0
-        ? Math.max(...notes.map(n => n.id))
-        : 0
-    const note = request.body
-    note.id = maxId + 1
+    const body = request.body
 
-    notes = notes.concat(note)
+    if (body.content == undefined) {
+        return response.status(400).json({ error: 'content missing' })
+    }
 
-    response.json(note)
+    const note = new Note({
+        content: body.content,
+        important: body.important || false
+    })
+
+    note.save().then(savedNote => {
+        response.json(savedNote)
+    })
 })
 
 const unknownEndpoint = (request, response) => {
@@ -51,6 +56,6 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint)
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT)
 console.log(`Server running on port ${PORT}`)
